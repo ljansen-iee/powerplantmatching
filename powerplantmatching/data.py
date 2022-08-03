@@ -908,8 +908,8 @@ def WEPP(raw=False, config=None):
             "Mw": "Capacity",
             "Year": "DateIn",
             "Retire": "DateOut",
-            "Lat": "lat", # no longer included in the wepp of 2022
-            "Lon": "lon", # no longer included in the wepp of 2022
+            "Lat": "lat", # not included in wepp of 2022
+            "Lon": "lon", # not included in wepp of 2022
             "Unitid": "projectID",
         },
         inplace=True,
@@ -1027,6 +1027,7 @@ def WEPP(raw=False, config=None):
         "ST/GT",
         "ST/GT/IC",
         "ST/T",
+        "ST/S",
         "IC/CD",
         "IC/CP",
         "IC/GT",
@@ -1551,17 +1552,19 @@ def GEM_GGPT(raw=False, update=False, config=None):
         e.g. powerplantmatching.config.get_config(target_countries='Italy'),
         defaults to powerplantmatching.config.get_config()
     """
-    if config is None:
-        config = get_config()
+    config = get_config() if config is None else config
 
-        fn = get_raw_file("GEM_GGPT", update=update, config=config)
-        df = pd.read_csv(fn, comment="#")
+    # download from https://globalenergymonitor.org/projects/global-gas-plant-tracker/download-data/
+    df = pd.read_csv(config["GEM_GGPT"]["source_file"], low_memory=False, encoding="utf-8")
+
+    df.columns.name = "GEM_GGPT"
+
     if raw:
         return df
 
     RENAME_COLUMNS = {
         "Country/area": "Country",
-        "name": "Name",
+        "Plant name": "Name",
         "Fuel": "Fueltype",
         "Capacity elec. (MW)": "Capacity",
         "Latitude": "lat",
@@ -1571,9 +1574,9 @@ def GEM_GGPT(raw=False, update=False, config=None):
     }
 
     technology_dict = {
-        "GT": "Steam Turbine",
+        "GT": "OCGT",
         "CC": "CCGT",
-        "GT/IC": "Steam Turbine",
+        "GT/IC": "OCGT",
         "ICCC": "CCGT",
         "ISCC": "CCGT",
         "ST": "Steam Turbine",
@@ -1588,4 +1591,5 @@ def GEM_GGPT(raw=False, update=False, config=None):
 
     df["Fueltype"] = "Natural Gas"
     df.Technology.replace(technology_dict, inplace=True)
+
     return df

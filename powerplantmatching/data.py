@@ -1031,6 +1031,7 @@ def WEPP(raw=False, config=None):
         "IC/CD",
         "IC/CP",
         "IC/GT",
+        "CCSS",
     ]
     ut_ocgt_pattern = ["GT", "GT/D", "GT/H", "GT/HY", "GT/IC", "GT/S", "GT/T", "GTC"]
     ut_st_pattern = ["ST", "ST/D"]

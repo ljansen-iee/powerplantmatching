@@ -2018,7 +2018,7 @@ def GGPT(raw=False, update=False, config=None):
 
 def GHPT(raw=False, update=False, config=None):
     """
-    Importer for the global gas powerplant tracker from global energy monitor.
+    Importer for the global hydro powerplant tracker from global energy monitor.
 
     Parameters
     ----------

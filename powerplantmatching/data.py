@@ -923,7 +923,7 @@ def WEPP(raw=False, config=None):
         "UNITID": str,
     }
     # Now read the Platts WEPP Database
-    wepp = pd.read_csv(config["WEPP"]["source_file"], dtype=datatypes, encoding="utf-8")
+    wepp = pd.read_csv(config["WEPP"]["fn"], dtype=datatypes, encoding="utf-8")
     if raw:
         return wepp
 
@@ -954,7 +954,7 @@ def WEPP(raw=False, config=None):
     wepp = (
         wepp.loc[lambda df: df.Country.isin(config["target_countries"])]
         .loc[lambda df: df.Status.isin(["OPR", "CON"])]
-        .assign(File=config["WEPP"]["source_file"])
+        .assign(File=config["WEPP"]["fn"])
     )
     # Replace fueltypes
     d = {

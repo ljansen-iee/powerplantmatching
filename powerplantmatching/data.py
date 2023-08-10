@@ -909,18 +909,18 @@ def WEPP(raw=False, config=None):
         "CONstr, UCT": str,
         "COOL": str,
         "RETIRE": np.float64,
-        "CITY": str,
+        "City": str,
         "STATE": str,
-        "COUNTRY": str,
+        "Country/Region": str,
         "AREA": str,
         "SUBREGION": str,
         "POSTCODE": str,
         "PARENT": str,
         "ELECTYPE": str,
         "BUSTYPE": str,
-        "COMPID": str,
-        "LOCATIONID": str,
-        "UNITID": str,
+        "CompID": str,
+        "LocationID": str,
+        "UnitID": str,
     }
     # Now read the Platts WEPP Database
     wepp = pd.read_csv(config["WEPP"]["fn"], dtype=datatypes, encoding="utf-8")
@@ -937,8 +937,9 @@ def WEPP(raw=False, config=None):
             "Mw": "Capacity",
             "Year": "DateIn",
             "Retire": "DateOut",
-            "Lat": "lat",
-            "Lon": "lon",
+            "Lat": "lat", # no longer available in the wepp since 2022
+            "Lon": "lon", # no longer available in the wepp since 2022
+            "Country/Region": "Country",
             "Unitid": "projectID",
         },
         inplace=True,

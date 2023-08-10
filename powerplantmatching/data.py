@@ -1048,6 +1048,7 @@ def WEPP(raw=False, config=None):
     wepp.loc[wepp.Technology.isin(tech_ccgt_pattern), "Technology"] = "CCGT"
     ut_ccgt_pattern = [
         "CC",
+        "CCSS",
         "GT/C",
         "GT/CP",
         "GT/CS",

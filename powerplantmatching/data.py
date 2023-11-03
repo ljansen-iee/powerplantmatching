@@ -1504,7 +1504,7 @@ def OPSD_VRE_country(country, raw=False, update=False, config=None):
     )
 
 
-def IRENASTAT(raw=False, update=False, config=None):
+def IRENASTAT(raw=False, update=False, config=None, year=None):
     """
     Importer for the IRENASTAT renewable capacity statistics.
 
@@ -1536,10 +1536,17 @@ def IRENASTAT(raw=False, update=False, config=None):
     }
     df.rename(columns=RENAME_COLUMNS, inplace=True)
 
-    # Consistent country names for dataset
-    df = convert_to_short_name(df)
-
-    df.dropna(subset="Capacity", inplace=True)
+    if not year:
+        year = df.Year.max()
+        logger.info(f"Select the capacities of the most current year: {year}.")
+    
+    df = (
+        df.query("Year == @year")
+        .pipe(convert_to_short_name) # Consistent country names for dataset
+        .pipe(set_column_name, "IRENASTAT")
+        .dropna(subset="Capacity")
+        #.drop(columns=["Grid"]) # NOTE: on/offgrid will be summed up below.  
+    )
 
     fueltype_dict = {
         "On-grid Solar photovoltaic": "Solar",

@@ -1118,9 +1118,9 @@ def WEPP(raw=False, config=None):
     return (
         wepp.pipe(set_column_name, "WEPP")
         .pipe(config_filter, config)
+        .pipe(fill_missing_decommissioning_years, config)
         .pipe(fill_geoposition, saved_only=False) # use saved_only=False + google_api_key initially
         .pipe(scale_to_net_capacities, (not config["WEPP"]["net_capacity"]))
-        .pipe(fill_missing_decommissioning_years, config)
         .pipe(correct_manually, "WEPP", config=config)
     )
 

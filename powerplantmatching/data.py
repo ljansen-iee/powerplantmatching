@@ -40,7 +40,8 @@ from .cleaning import (
     gather_technology_info,
 )
 from .core import _data_in, _package_data, get_config
-from .heuristics import scale_to_net_capacities
+from .heuristics import (scale_to_net_capacities, 
+                         fill_missing_decommissioning_years)
 from .utils import (
     config_filter,
     convert_to_short_name,
@@ -1117,8 +1118,9 @@ def WEPP(raw=False, config=None):
     return (
         wepp.pipe(set_column_name, "WEPP")
         .pipe(config_filter, config)
-        .pipe(fill_geoposition) # use saved_only=False + google_api_key initially
+        .pipe(fill_geoposition, saved_only=False) # use saved_only=False + google_api_key initially
         .pipe(scale_to_net_capacities, (not config["WEPP"]["net_capacity"]))
+        .pipe(fill_missing_decommissioning_years, config)
         .pipe(correct_manually, "WEPP", config=config)
     )
 

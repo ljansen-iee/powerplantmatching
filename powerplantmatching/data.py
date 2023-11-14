@@ -1119,7 +1119,7 @@ def WEPP(raw=False, config=None):
         wepp.pipe(set_column_name, "WEPP")
         .pipe(config_filter, config)
         .pipe(fill_missing_decommissioning_years, config)
-        .pipe(fill_geoposition, saved_only=False) # use saved_only=False + google_api_key initially
+        .pipe(fill_geoposition) # use saved_only=False + google_api_key initially
         .pipe(scale_to_net_capacities, (not config["WEPP"]["net_capacity"]))
         .pipe(correct_manually, "WEPP", config=config)
     )
@@ -1553,6 +1553,7 @@ def IRENASTAT(raw=False, update=False, config=None, year=None):
     fueltype_dict = {
         "On-grid Solar photovoltaic": "Solar",
         "Off-grid Solar photovoltaic": "Solar",
+        "Solar photovoltaic": "Solar",
         "Concentrated solar power": "Solar",
         "Onshore wind energy": "Wind",
         "Offshore wind energy": "Wind",
@@ -1578,6 +1579,7 @@ def IRENASTAT(raw=False, update=False, config=None, year=None):
         "On-grid Solar photovoltaic": "PV",
         "Off-grid Solar photovoltaic": "PV",
         "Concentrated solar power": "CSP",
+        "Solar thermal energy": "CSP",
         "Onshore wind energy": "Onshore",
         "Offshore wind energy": "Offshore",
         "Pumped storage": "Pumped Storage",

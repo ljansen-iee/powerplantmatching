@@ -64,6 +64,7 @@ AGGREGATION_FUNCTIONS = {
     "DamHeight_m": "sum",
     "StorageCapacity_MWh": "sum",
     "Efficiency": "sum",  # note this is weighted mean
+    "State": mode
 }
 
 

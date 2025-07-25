@@ -1,9 +1,132 @@
-History of Changes
-==================
+Release Notes
+==============
+
+Upcoming Version
+----------------
+
+* Update Marktstammdatenregister data for Germany from `open-MaStR (February 25, 2025)  <https://zenodo.org/records/14783581>`__.
+
+`v0.7.1 <https://github.com/PyPSA/powerplantmatching/releases/tag/v0.7.1>`__ (30th January 2024)
+=================================================================================================
+
+Bug fixes
+---------
+
+* Patch for a bug in matching caused by faulty names for BNA hydro powerplants
+  in the OPSD_EU input dataset. (https://github.com/PyPSA/powerplantmatching/pull/217)
+
+* Minor manual correction for CCGT powerplant. (https://github.com/PyPSA/powerplantmatching/pull/221)
+
+`v0.7.0 <https://github.com/PyPSA/powerplantmatching/releases/tag/v0.7.0>`__ (23rd January 2025)
+=================================================================================================
+
+Features
+--------
+
+* Add "Marktstammdatenregister" (MaStR) data source for Germany (https://github.com/PyPSA/powerplantmatching/pull/165).
 
 
-.. Upcoming Version
-.. ----------------
+`v0.6.1 <https://github.com/PyPSA/powerplantmatching/releases/tag/v0.6.1>`__ (15th January 2025)
+=================================================================================================
+
+Bug fixes
+---------
+
+* Remove duplicate conventional power plants coming from different OPSD input files (https://github.com/PyPSA/powerplantmatching/pull/213).
+
+`v0.6.0 <https://github.com/PyPSA/powerplantmatching/releases/tag/v0.6.0>`__ (18th September 2024)
+=================================================================================================
+
+Features
+--------
+
+* BREAKING: Split "Bioenergy" into "Biogas" and "Solid Biomass" (https://github.com/PyPSA/powerplantmatching/pull/201).
+
+Bug fixes
+---------
+
+* Bugfix: Consistently rename countries, affecting power plants in Czech Republic and
+  Moldova (https://github.com/PyPSA/powerplantmatching/pull/204).
+
+
+Version 0.5.19 (16.09.2024)
+===========================
+
+* Bugfix: Fix retrieval of Global Energy Monitor data.
+
+
+Version 0.5.18 (30.08.2024)
+===========================
+
+* Treat Kosovo as separate country and do not assign powerplants to Serbia.
+
+* Correctly reference North Macedonia and Moldova for ``pycountry`` matching.
+
+
+Version 0.5.17 (23.08.2024)
+===========================
+
+* Update Global Energy Monitor data to latest versions as of 2024-08-23.
+
+* Adjusted reliability scores in favour of GEM data.
+
+
+Version 0.5.16 (31.07.2024)
+===========================
+
+* Dependency updates: Ensure compatibility with pandas 2.0, numpy 2.0 and cartopy.
+
+* Bugfix: Fix retrieving data without aggregation (https://github.com/PyPSA/powerplantmatching/pull/180)
+
+
+Version 0.5.15 (12.05.2024)
+===========================
+
+* Updated the JRC hydro power plant database to the latest version.
+  (https://github.com/PyPSA/powerplantmatching/pull/123)
+
+* Corrected capacity of some hydro powerplants in the United Kingdom contained
+  in the ENTSOE data based on manual search. The error originated from the use
+  of the value 999 in the capacity column to represent NaN values. The changes
+  accumulate to a reduction of approximately 5 GW in capacity.
+  (https://github.com/PyPSA/powerplantmatching/pull/141)
+
+* Remove use of ``distutils`` package for compatibility with python 3.12.
+  (https://github.com/PyPSA/powerplantmatching/pull/159)
+
+Version 0.5.14 (30.04.2024)
+===========================
+
+* Bugfix to ensure compatibility with python 3.12.
+
+Version 0.5.13 (25.04.2024)
+===========================
+
+* Update IRENASTAT to include data up to 2023 (``ppm.data.IRENASTAT()``).
+
+Version 0.5.12 (07.04.2024)
+===========================
+
+* fix the filtering of GCPT/GEM coal database by Status.
+* add technology renaming for GWPT/GEM wind dataset.
+* improve performances of GEM data processing.
+
+Version 0.5.11 (05.02.2024)
+===========================
+
+* The default configuration no longer filters out retired power plants. This filtering should be done by the user afterwards.
+
+Version 0.5.10 (30.01.2024)
+===========================
+
+* fix deprecation warnings for new pandas version for inplace operations
+* fix bus mapping in ``export`` module
+
+Version 0.5.9 (16.01.2024)
+===========================
+
+* fix deprecation warnings for new pandas version
+* lower GEM reliability score to fix DateIn and DateOut for some powerplants
 
 
 Version 0.5.8 (30.10.2023)
@@ -12,7 +135,8 @@ Version 0.5.8 (30.10.2023)
 **New Features**
 
 * Datasets from the Global Energy Monitor are now combined into one dataset called `GEM`. This is per default used in the matching process.
-* Updates the following Global Energy Monitor data according to latest May 2023 release: 
+
+* Updates the following Global Energy Monitor data according to latest May 2023 release:
   * `GSPT`, solar power plant
   * `GWPT`, wind power plant
 * Changing Global Energy Monitor dataset name to -latest to avoid data update PRs in powerplantmatching
@@ -41,7 +165,7 @@ Version 0.5.7 (30.05.2023)
   * `GGTPT`, geothermal power plant
   * `GNPT`, nuclear power plant
   * `GSPT`, solar power plant
-  * `GWPT`, wind power plant 
+  * `GWPT`, wind power plant
   * `GHPT`, hydro power plant
 
 
@@ -69,7 +193,7 @@ Version 0.5.5 (21.12.2022)
 * New `EXTERNAL_DATABASE` interface to integrate additional custom data of raw data matching the powerplantmatching format.
 * The example notebook was updated to the new version of the package.
 * Rename the `matching_analysis` directory to `analysis`.
-* Harmonize the analysis scripts with the `pm.powerlants(update=True)` functionality. 
+* Harmonize the analysis scripts with the `pm.powerlants(update=True)` functionality.
 
 **Bug fixes**
 
@@ -83,7 +207,7 @@ Version 0.5.5 (21.12.2022)
 * Rename the `matching_analysis` directory to `analysis`.
 * Rename `GEM_GGPT` to `GGPT` and add `GEM_GGPT` as an deprecated alias.
 * Rename `matched_data` to `powerplants` in `collection.py` and add `matched_data` as an deprecated alias.
-* Fueltype "Other" was remove from the Capacity_Stats function. 
+* Fueltype "Other" was remove from the Capacity_Stats function.
 
 
 Version 0.5.4 (02.08.2022)
@@ -105,7 +229,7 @@ Version 0.5.3 (08.04.2022)
 Version 0.5.2 (07.04.2022)
 -------------------------
 
-* The overall config setting was fine-tuned in order to improve the matching results. 
+* The overall config setting was fine-tuned in order to improve the matching results.
 * New scripts were added to the folder `matching_analysis`
 
 Version 0.5.1 (04.04.2022)
@@ -117,12 +241,12 @@ Version 0.5.1 (04.04.2022)
 
 **Bug fix**
 
-* The url of the ``powerplants`` function was fixed. 
+* The url of the ``powerplants`` function was fixed.
 
 
 **Other**
 
-* The removal of the column ``DateMothBall`` was caught up on. 
+* The removal of the column ``DateMothBall`` was caught up on.
 * The manual corrections were reactivated.
 * Improved country code and name conversion by using ``country_converter``.
 
@@ -131,17 +255,17 @@ Version 0.5 (04.04.2022)
 ------------------------
 
 
-This release contains many breaking changes. Due to time-constraints we cannot ensure a smooth transition to the new release. If you are using a custom config file (e.g. ``~/powerplantmatching_config.yaml``) please be aware of the following config changes: 
+This release contains many breaking changes. Due to time-constraints we cannot ensure a smooth transition to the new release. If you are using a custom config file (e.g. ``~/powerplantmatching_config.yaml``) please be aware of the following config changes:
 
 **Configuration Changes**
 
 * The custom configuration now only updates the package default configuration, which makes the compatibility of configuration updates much easier. So, instead of replacing the whole package configuration (the default config provided by powerplantmatching), the new purpose of the custom config is to adjust individual values. So, please make sure to only add keys to the custom config which you want to change in comparison to the default config.
-* The following sections of the configuration file ``~/powerplantmatching_config.yaml`` changed: 
-  * the ``target_fueltypes`` section is now mapping the representative fueltypes to the regular expressions that are used in order to determine them.  
-  * the ``target_technologies`` section is now mapping the representative technologies to the regular expressions that are used in order to determine them.  
-  * the ``target_set`` section is now mapping the representative sets to the regular expressions that are used in order to determine them.  
+* The following sections of the configuration file ``~/powerplantmatching_config.yaml`` changed:
+  * the ``target_fueltypes`` section is now mapping the representative fueltypes to the regular expressions that are used in order to determine them.
+  * the ``target_technologies`` section is now mapping the representative technologies to the regular expressions that are used in order to determine them.
+  * the ``target_set`` section is now mapping the representative sets to the regular expressions that are used in order to determine them.
   * a section ``clean_name`` was added. This section contains the regular expressions and lists of words that are used to clean the names of the plants.
-In order to ensure compatibility with the new code, please delete these sections in your custom config. 
+In order to ensure compatibility with the new code, please delete these sections in your custom config.
 
 **Deprecations**
 
@@ -163,29 +287,29 @@ In order to ensure compatibility with the new code, please delete these sections
 
 **New Features**
 
-* The `BEYOND COAL <https://beyond-coal.eu/coal-exit-tracker/>`_ data is now available as an data source. 
-* A new dataset ``WIKIPEDIA`` on nuclear powerplants in europe from wikipedia was added. 
-* The ``GEO`` dataset returns powerplant blocks instead of whole plants. 
+* The `BEYOND COAL <https://beyond-coal.eu/coal-exit-tracker/>`_ data is now available as an data source.
+* A new dataset ``WIKIPEDIA`` on nuclear powerplants in europe from wikipedia was added.
+* The ``GEO`` dataset returns powerplant blocks instead of whole plants.
 * All scripts were aligned with the ``black`` coding style.
 * A documentation on readthedocs was added.
-* The config has now a key `main_query` which is applied to all datasets. 
-* A CI was added. 
+* The config has now a key `main_query` which is applied to all datasets.
+* A CI was added.
 * A new function ``powerplantmatching.heuristics.isin`` was added. It checks which data entries of a non-matched dataset is included in a matched dataset.
 
 **Breaking Code Changes:**
 
 * The argument `rawDE` and `rawEU` in ``powerplantmatching.data.OPSD`` was deprecated in the favor of `raw`. If ``True`` the function returns a dictionary with the raw datasets.
 * All keyword arguments of the data functions in ``powerplantmatching.data`` were sorted according to ``raw``, ``update``, ``config``. This lead to some breaking changes of the arguments order.
-* The Fueltype `Other` was replaced by NaN. 
-* The `GEO` data now returns a dataset containing power plant units.  
-* The ``ESE`` dataset was removed due the hosting website taken down. 
-* The argument ``subsume_uncommon_fueltypes_to_other`` in ``powerplantmatching.collection.matched_data`` was removed. 
+* The Fueltype `Other` was replaced by NaN.
+* The `GEO` data now returns a dataset containing power plant units.
+* The ``ESE`` dataset was removed due the hosting website taken down.
+* The argument ``subsume_uncommon_fueltypes_to_other`` in ``powerplantmatching.collection.matched_data`` was removed.
 * The function ``powerplantmatching.cleaning.aggregate_units`` does not support the arguments `use_saved_aggregation` and `save_aggregation` anymore due to it's insecure behavior.
 * The function ``powerplantmatching.matching.compare_two_datasets`` does not support the arguments `use_saved_matches` anymore due to it's insecure behavior.
 
 
 Version 0.4.6 (25.11.2020)
---------------------------
+===========================
 
 | Triggered by the ongoing phase-outs of especially nuclear, coal and
   lignite plants in many countries, we acknowledge that time-related
@@ -215,7 +339,7 @@ Version 0.4.6 (25.11.2020)
   power plant list
 
 Version 0.4.1 (02.08.2019)
---------------------------
+===========================
 
 Data structure
 ~~~~~~~~~~~~~~

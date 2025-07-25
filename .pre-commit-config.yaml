@@ -1,25 +1,35 @@
 # SPDX-FileCopyrightText: 2021 The Atlite Authors
 #
 # SPDX-License-Identifier: CC0-1.0
+ci:
+  autoupdate_schedule: quarterly
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v5.0.0
     hooks:
     -   id: check-yaml
--   repo: https://github.com/psf/black
-    rev: 23.10.1
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+    -   id: check-merge-conflict
+
+# Run ruff to lint and format
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.8
     hooks:
-    -   id: black
--   repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-        args: ["--profile", "black", "--filter-files"]
+    # Run the linter.
+    -   id: ruff
+        args: [--fix]
+    # Run the formatter.
+    -   id: ruff-format
+
+# Run codespell to check spelling
 -   repo: https://github.com/codespell-project/codespell
-    rev: v2.2.6
+    rev: v2.4.1
     hooks:
     -   id: codespell
+        args: [
+            --ignore-regex, "(`<.+>`_)",  # Ignore urls in rst
+            --ignore-words, .codespell.ignore
+            ]
         types_or: [python, rst, markdown]
-        # files: ^(powerplantmatching|doc|test)/
-        entry: codespell --ignore-words ignore-spelling-words.txt

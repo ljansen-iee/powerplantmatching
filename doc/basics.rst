@@ -6,7 +6,7 @@ The dataset combines the data of all the data sources listed in
 `Data-Sources <#Data-Sources>`__ and provides the following information:
 
 -  **Power plant name** - claim of each database
--  **Fueltype** - {Bioenergy, Geothermal, Hard Coal, Hydro, Lignite,
+-  **Fueltype** - {Solid Biomass, Biogas, Geothermal, Hard Coal, Hydro, Lignite,
    Nuclear, Natural Gas, Oil, Solar, Wind, Other}
 -  **Technology** - {CCGT, OCGT, Steam Turbine, Combustion Engine,
    Run-Of-River, Pumped Storage, Reservoir}
@@ -79,12 +79,12 @@ Not available but supported sources:
 -  WEPP (Platts, World Elecrtric Power Plants Database)
 
 
-Reliabilty Score 
+Reliabilty Score
 ----------------
 
 When the matched power plant entries from different sources are combined, the resulting value per column is determined by the most reliable source. The corresponding reliability scores
 are:
-   
+
 ======= ================
 Dataset Reliabilty score
 ======= ================

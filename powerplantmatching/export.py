@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016-2018 Fabian Hofmann (FIAS), Jonas Hoersch (KIT, IAI) and
 # Fabian Gotzens (FZJ, IEK-STE)
 
@@ -72,8 +71,12 @@ def map_bus(df, buses):
     DataFrame with an extra column 'bus' indicating the nearest bus.
     """
     df = get_obj_if_Acc(df)
-    kdtree = KDTree(buses[["x", "y"]])
-    buses_i = buses.index.append(pd.Index([np.nan]))
+    non_empty_buses = buses.dropna()
+    kdtree = KDTree(non_empty_buses[["x", "y"]])
+    if non_empty_buses.empty:
+        buses_i = pd.Index([np.nan])
+    else:
+        buses_i = non_empty_buses.index.append(pd.Index([np.nan]))
     return df.assign(bus=buses_i[kdtree.query(df[["lon", "lat"]].values)[1]])
 
 
@@ -96,7 +99,7 @@ def map_country_bus(df, buses):
     diff = set(df.Country.unique()) - set(buses.country)
     if len(diff):
         logger.warning(
-            f'Power plants in {", ".join(diff)} cannot be mapped '
+            f"Power plants in {', '.join(diff)} cannot be mapped "
             "because the countries do not appear in `buses`."
         )
     res = []
@@ -113,7 +116,7 @@ def to_pypsa_network(df, network, buslist=None):
     """
     df = get_obj_if_Acc(df)
     df = map_bus(df, network.buses.reindex(buslist))
-    df.Set.replace("CHP", "PP", inplace=True)
+    df["Set"] = df.Set.replace("CHP", "PP")
     if "Duration" in df:
         df["weighted_duration"] = df["Duration"] * df["Capacity"]
         df = df.groupby(["bus", "Fueltype", "Set"]).aggregate(
@@ -136,7 +139,6 @@ def to_pypsa_network(df, network, buslist=None):
 
 @deprecated(
     deprecated_in="0.5.0",
-    removed_in="0.6.0",
     details="This function is not maintained anymore and will be removed in the future.",
 )
 def to_TIMES(df=None, use_scaled_capacity=False, baseyear=2015):
@@ -242,7 +244,7 @@ def to_TIMES(df=None, use_scaled_capacity=False, baseyear=2015):
     df["Life"] = df.TimesType.map(timestype_to_life())
     if df.Life.isnull().any():
         raise ValueError(
-            "There are rows without a given lifetime in the " "dataframe. Please check!"
+            "There are rows without a given lifetime in the dataframe. Please check!"
         )
 
     # add column with decommissioning year
@@ -278,9 +280,11 @@ def to_TIMES(df=None, use_scaled_capacity=False, baseyear=2015):
                     # are being filtered.
                     elif yr > baseyear:
                         series = ct_group.apply(
-                            lambda x: x[cap_column]
-                            if yr >= x["DateIn"] and yr <= x["YearRetire"]
-                            else 0,
+                            lambda x: (
+                                x[cap_column]
+                                if yr >= x["DateIn"] and yr <= x["YearRetire"]
+                                else 0
+                            ),
                             axis=1,
                         )
                     else:
@@ -296,9 +300,10 @@ def to_TIMES(df=None, use_scaled_capacity=False, baseyear=2015):
                     logger.error(
                         "For region '{}' and timestype '{}' the value for "
                         "year {} ({0.000}) is higher than in the year before "
-                        "({0.000}).".format(
-                            reg, tt, yr, df_exp.loc[row, reg], df_exp.loc[row - 1, reg]
-                        )
+                        "({0.000}).",
+                        reg,
+                        tt,
+                        yr,
                     )
             df_exp.loc[row, "Pset_Pn"] = tt
             row += 1
@@ -312,7 +317,7 @@ def to_TIMES(df=None, use_scaled_capacity=False, baseyear=2015):
     return df_exp
 
 
-@deprecated(deprecated_in="0.5.0", removed_in="0.6.0")
+@deprecated(deprecated_in="0.5.0")
 def store_open_dataset():
     from .collection import matched_data, reduce_matched_dataframe
 
@@ -325,13 +330,14 @@ def store_open_dataset():
     return m
 
 
-@deprecated(deprecated_in="0.5.0", removed_in="0.6.0")
+@deprecated(deprecated_in="0.5.0")
 def fueltype_to_abbrev():
     """
     Return the fueltype-specific abbreviation.
     """
     data = {
-        "Bioenergy": "BIO",
+        "Solid Biomass": "BIO",
+        "Biogas": "BIG",
         "Geothermal": "GEO",
         "Hard Coal": "COA",
         "Hydro": "HYD",
@@ -347,7 +353,7 @@ def fueltype_to_abbrev():
     return data
 
 
-@deprecated(deprecated_in="0.5.0", removed_in="0.6.0")
+@deprecated(deprecated_in="0.5.0")
 def timestype_to_life():
     """
     Returns the timestype-specific technical lifetime.

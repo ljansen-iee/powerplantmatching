@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Created on Tue Jul 16 15:47:46 2019
 
@@ -27,8 +26,8 @@ package_config = {
     "downloaders": {},
 }
 
-makedirs(join(package_config["data_dir"], "data", "in"), exist_ok=True)
-makedirs(join(package_config["data_dir"], "data", "out"), exist_ok=True)
+makedirs(join(str(package_config["data_dir"]), "data", "in"), exist_ok=True)
+makedirs(join(str(package_config["data_dir"]), "data", "out"), exist_ok=True)
 
 
 def _package_data(fn):
@@ -36,14 +35,14 @@ def _package_data(fn):
 
 
 def _data_in(fn):
-    return join(package_config["data_dir"], "data", "in", fn)
+    return join(str(package_config["data_dir"]), "data", "in", fn)
 
 
 def _data_out(fn, config):
     if config is None:
-        directory = join(package_config["data_dir"], "data", "out", "default")
+        directory = join(str(package_config["data_dir"]), "data", "out", "default")
     else:
-        directory = join(package_config["data_dir"], "data", "out", config["hash"])
+        directory = join(str(package_config["data_dir"]), "data", "out", config["hash"])
     makedirs(directory, exist_ok=True)
     return join(directory, fn)
 
@@ -56,13 +55,12 @@ if not exists(_data_in(".")):
 
 # Logging: General Settings
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=20)
-logger.setLevel("INFO")
+logger.setLevel(logging.INFO)
 # Logging: File
 logFormatter = logging.Formatter(
-    "%(asctime)s [%(threadName)-12.12s] " "[%(levelname)-5.5s]  %(message)s"
+    "%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s"
 )
-fileHandler = logging.FileHandler(join(package_config["data_dir"], "PPM.log"))
+fileHandler = logging.FileHandler(join(str(package_config["data_dir"]), "PPM.log"))
 fileHandler.setFormatter(logFormatter)
 logger.addHandler(fileHandler)
 # logger.info('Initialization complete.')
@@ -101,10 +99,10 @@ def get_config(filename=None, **overrides):
     else:
         custom_config = package_config["custom_config"]
 
-    with open(base_config) as f:
+    with open(base_config, encoding="utf8") as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
     if exists(custom_config):
-        with open(custom_config) as f:
+        with open(custom_config, encoding="utf8") as f:
             config.update(yaml.load(f, Loader=yaml.FullLoader))
     config.update(overrides)
 

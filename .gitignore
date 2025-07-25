@@ -93,4 +93,8 @@ doc/api
 .vscode
 test.ipynb
 
+# temporary
+.devcontainer/
+.repoai/
+
 spg_wepp_other_Mar2023.csv

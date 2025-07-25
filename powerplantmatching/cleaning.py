@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016-2018 Fabian Hofmann (FIAS), Jonas Hoersch (KIT, IAI) and
 # Fabian Gotzens (FZJ, IEK-STE)
 
@@ -17,11 +16,8 @@
 """
 Functions for vertically cleaning a dataset.
 """
-from __future__ import absolute_import, print_function
 
 import logging
-import os
-import re
 
 import networkx as nx
 import numpy as np
@@ -114,7 +110,7 @@ def clean_name(df, config=None):
     return df.assign(Name=name).sort_values("Name")
 
 
-@deprecated(deprecated_in="5.0", removed_in="0.6", details="Use `clean_name` instead.")
+@deprecated(deprecated_in="5.0", details="Use `clean_name` instead.")
 def clean_powerplantname(df, config=None):
     return clean_name(df, config=config)
 
@@ -161,14 +157,13 @@ def gather_and_replace(df, mapping):
     for key, pattern in mapping.items():
         if not pattern:
             # if pattern is not given, fall back to case-insensitive key
-            pattern = r"(?i)\b%s\b" % key
+            pattern = rf"(?i)\b{key}\b"
         elif isinstance(pattern, list):
             # if pattern is a list, concat all entries in a case-insensitive regex
             pattern = r"(?i)" + "|".join([rf"\b{p}\b" for p in pattern])
         elif not isinstance(pattern, str):
             raise ValueError(f"Pattern must be string or list, not {type(pattern)}")
-        func = lambda ds: ds.str.contains(pattern)
-        where = df.astype(str).apply(func).any(axis=1)
+        where = df.astype(str).apply(lambda ds: ds.str.contains(pattern)).any(axis=1)
         res = res.where(~where, key)
     return res
 
@@ -249,7 +244,6 @@ def gather_fueltype_info(
 
 @deprecated(
     deprecated_in="0.5",
-    removed_in="0.6",
     details="Use `gather_specifications` instead.",
 )
 def gather_technology_info(
@@ -308,10 +302,9 @@ def gather_set_info(df, search_col=["Name", "Fueltype", "Technology"], config=No
     return df.assign(Set=Set)
 
 
-@deprecated(
-    deprecated_in="0.5",
-    removed_in="0.6",
-)
+# @deprecated(
+#     deprecated_in="0.5",
+# )
 def clean_technology(df, generalize_hydros=False):
     """
     Clean the 'Technology' by condensing down the value into one claim. This
@@ -339,9 +332,9 @@ def clean_technology(df, generalize_hydros=False):
         tech[tech.str.contains("dam", case=False)] = "Reservoir"
     tech = tech.replace({"Gas turbine": "OCGT"})
     tech[tech.str.contains("combined cycle|combustion", case=False)] = "CCGT"
-    tech[
-        tech.str.contains("steam turbine|critical thermal", case=False)
-    ] = "Steam Turbine"
+    tech[tech.str.contains("steam turbine|critical thermal", case=False)] = (
+        "Steam Turbine"
+    )
     tech[tech.str.contains("ocgt|open cycle", case=False)] = "OCGT"
     tech = (
         tech.str.title()
@@ -411,7 +404,7 @@ def aggregate_units(
         for arg in used_deprecated_args:
             kwargs.pop(arg)
         msg = "The following arguments were deprecated and are being ignored: "
-        logger.warn(msg + f"{used_deprecated_args}")
+        logger.warning(msg + f"{used_deprecated_args}")
 
     df = get_obj_if_Acc(df)
 
@@ -450,7 +443,10 @@ def aggregate_units(
 
     df = cliques(df, duplicates)
     df = df.groupby("grouped").agg(props_for_groups)
-    df[str_cols] = df[str_cols].replace("", np.nan)
+
+    # Downcasting in replace is deprecated
+    with pd.option_context("future.no_silent_downcasting", True):
+        df[str_cols] = df[str_cols].replace("", pd.NA).infer_objects(copy=False)
 
     df = (
         df.assign(

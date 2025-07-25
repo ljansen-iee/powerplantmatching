@@ -635,7 +635,9 @@ def fill_geoposition(
 
     if use_saved_locations:
         logger.info(f"Adding stored geo-position from {fn}")
-        locs = pd.read_csv(fn, index_col=[0, 1]).drop_duplicates()
+        locs = (pd.read_csv(fn)
+                .drop_duplicates(subset=["Name", "Country"])
+                .set_index(["Name", "Country"]))
         if isinstance(df.columns, pd.MultiIndex):
             new_data = (
                 df.drop(columns=["lat", "lon"])

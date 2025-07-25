@@ -545,7 +545,7 @@ def restore_blocks(df, mode=2, config=None):
 
 
 def parse_Geoposition(
-    location, zipcode="", country="", use_saved_locations=False, saved_only=False
+    location, zipcode="", city="", country="", use_saved_locations=False, saved_only=False
 ):
     """
     Nominatim request for the Geoposition of a specific location in a country.
@@ -579,7 +579,7 @@ def parse_Geoposition(
     try:
         gdata = GoogleV3(api_key=get_config()["google_api_key"], timeout=10).geocode(
             query=location,
-            components={"country": alpha2, "postal_code": str(zipcode)},
+            components={"country": alpha2, "postal_code": str(zipcode), "city": city},
             exactly_one=True,
         )
     except geopy.exc.GeocoderQueryError as e:
@@ -662,6 +662,9 @@ def fill_geoposition(
 
     if "postalcode" not in missing.columns:
         missing["postalcode"] = ""
+    
+    if "city" not in missing.columns:
+        missing["city"] = ""
 
     cols = ["Name", "Country", "lat", "lon"]
     geodata = pd.DataFrame(index=missing.index, columns=cols)
@@ -669,6 +672,7 @@ def fill_geoposition(
         geodata.loc[i, :] = parse_Geoposition(
             location=missing.at[i, "Name"],
             zipcode=missing.at[i, "postalcode"],
+            city=missing.at[i, "city"],
             country=missing.at[i, "Country"],
         )
 
